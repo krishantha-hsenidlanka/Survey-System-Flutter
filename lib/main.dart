@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
+      home: AuthenticationWrapper(child: HomeScreen()),
       routes: {
         '/login': (context) => LoginScreen(),
         '/home': (context) => AuthenticationWrapper(child: HomeScreen()),
