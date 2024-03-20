@@ -55,7 +55,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             },
             onWebViewCreated: (WebViewController controller) {
               _controller = controller;
-              setTokenInLocalStorage(); // Call setTokenInLocalStorage here
+              setTokenInLocalStorage();
             },
           ),
           if (_isLoadingPage)

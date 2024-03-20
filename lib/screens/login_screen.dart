@@ -11,7 +11,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false, // Disable and hide the back button
+        automaticallyImplyLeading: false,
         title: Text(
           'AI Survey',
           style: TextStyle(
@@ -31,27 +31,24 @@ class LoginScreen extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: Form(
-          // Wrap the form with Form widget
-          key: _formKey, // Assign the form key
+          key: _formKey, 
           child: Column(
             mainAxisAlignment:
-                MainAxisAlignment.center, // Align horizontally center
+                MainAxisAlignment.center, 
             children: <Widget>[
               Text('Login',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               SizedBox(height: 26),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Set horizontal padding
+                    horizontal: 16.0), 
                 child: TextFormField(
-                  // Replace TextField with TextFormField
                   controller: _usernameController,
                   decoration: InputDecoration(
                     labelText: 'Username',
                     border: OutlineInputBorder(),
                   ),
                   validator: (value) {
-                    // Add validator for username
                     if (value!.isEmpty) {
                       return 'Please enter a username';
                     }
@@ -62,9 +59,8 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 8),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Set horizontal padding
+                    horizontal: 16.0),
                 child: TextFormField(
-                  // Replace TextField with TextFormField
                   controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Password',
@@ -72,7 +68,6 @@ class LoginScreen extends StatelessWidget {
                   ),
                   obscureText: true,
                   validator: (value) {
-                    // Add validator for password
                     if (value!.isEmpty) {
                       return 'Please enter a password';
                     }
@@ -85,7 +80,6 @@ class LoginScreen extends StatelessWidget {
                 text: 'Login',
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    // Validate the form
                     final success = await AuthService.login(
                       _usernameController.text,
                       _passwordController.text,

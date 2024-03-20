@@ -12,9 +12,8 @@ class ProfileScreen extends StatelessWidget {
     return AppLayout(
       title: 'My Profile',
       backButton: false,
-      currentIndex: 3, // Profile screen index
+      currentIndex: 3, 
       onTap: (index) {
-        // Handle navigation to different screens
         switch (index) {
           case 0:
             Navigator.pushNamed(context, '/home');
@@ -25,7 +24,6 @@ class ProfileScreen extends StatelessWidget {
           case 2:
             Navigator.pushNamed(context, '/responses');
             break;
-          // Add more cases as needed
         }
       },
       child: FutureBuilder<User>(

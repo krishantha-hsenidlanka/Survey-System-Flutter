@@ -13,7 +13,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 70.0, vertical: 20.0), // Set the desired padding values
+      padding: EdgeInsets.symmetric(horizontal: 70.0, vertical: 10.0),
       child: Container(
         height: 44.0,
         decoration: BoxDecoration(
@@ -29,8 +29,8 @@ class CustomButton extends StatelessWidget {
               child: Text(
                 text,
                 style: TextStyle(
-                  color: Colors.white, // Set text color to white
-                  fontWeight: FontWeight.w700, // Set text font weight to bold
+                  color: Colors.white, 
+                  fontWeight: FontWeight.w700, 
                 ),
               ),
             ),

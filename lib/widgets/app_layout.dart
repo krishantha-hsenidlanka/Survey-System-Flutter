@@ -34,7 +34,10 @@ class AppLayout extends StatelessWidget {
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [const Color.fromARGB(255, 22, 0, 143), const Color.fromARGB(255, 21, 90, 237)],
+                colors: [
+                  const Color.fromARGB(255, 22, 0, 143),
+                  const Color.fromARGB(255, 21, 90, 237)
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -46,6 +49,8 @@ class AppLayout extends StatelessWidget {
               color: Colors.white,
               onPressed: () {
                 AuthService.logout();
+                Navigator.of(context).pop();
+
                 Navigator.pushReplacementNamed(context, '/login');
               },
             ),
@@ -64,6 +69,7 @@ class AppLayout extends StatelessWidget {
                 return child;
               } else {
                 WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  Navigator.of(context).pop();
                   Navigator.pushReplacementNamed(context, '/login');
                 });
                 return Container();

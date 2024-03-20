@@ -17,8 +17,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
   List<Survey> _surveys = [];
   int _currentPage = 0;
   bool _isLoading = false;
-  bool _hasMoreSurveys = true; // Add this line
-
+  bool _hasMoreSurveys = true; 
   @override
   void initState() {
     super.initState();
@@ -102,7 +101,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       CircularProgressIndicator(
                         color: Color.fromARGB(214, 33, 47, 243),
                         
-                      )); // Add 'const' keyword
+                      )); 
             } else if (snapshot.hasError) {
               return Center(
                   child: Text('No surveys yet!',
@@ -144,17 +143,17 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text(
-                                    'Confirm Delete'), // Add 'const' keyword
+                                    'Confirm Delete'), 
                                 content: const Text(
                                     'Are you sure you want to delete this survey?'), // Add 'const' keyword
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context)
-                                          .pop(); // Close the dialog
+                                          .pop(); 
                                     },
                                     child: const Text(
-                                        'Cancel'), // Add 'const' keyword
+                                        'Cancel'), 
                                   ),
                                   TextButton(
                                     onPressed: () async {
@@ -166,7 +165,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                             .showSnackBar(
                                           SnackBar(
                                             content: const Text(
-                                                'Survey deleted successfully.'), // Add 'const' keyword
+                                                'Survey deleted successfully.'), 
                                             backgroundColor: Colors.green,
                                           ),
                                         );
@@ -178,16 +177,16 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                             .showSnackBar(
                                           SnackBar(
                                             content: const Text(
-                                                'Failed to delete survey.'), // Add 'const' keyword
+                                                'Failed to delete survey.'),
                                             backgroundColor: Colors.red,
                                           ),
                                         );
                                       }
                                       Navigator.of(context)
-                                          .pop(); // Close the dialog
+                                          .pop();
                                     },
                                     child: const Text(
-                                        'Delete'), // Add 'const' keyword
+                                        'Delete'), 
                                   ),
                                 ],
                               );
@@ -198,7 +197,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                     } else if (_isLoading) {
                       return const Center(
                           child:
-                              CircularProgressIndicator()); // Add 'const' keyword
+                              CircularProgressIndicator()); 
                     } else {
                       return SizedBox();
                     }

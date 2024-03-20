@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
     return AppLayout(
       title: 'AI Survey',
       backButton: false,
-      currentIndex: 0, 
+      currentIndex: 0,
       onTap: (index) {
         switch (index) {
           case 1:
@@ -54,11 +54,78 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   CustomButton(
-                    onPressed: () =>
-                        navigateToWebView(context, 'https://google.com'),
-                    text: 'Create New Survey',
+                    onPressed: () async {
+                     try{
+                       String responseId =
+                          await apiService.createSurveyWithSampleData();
+                      String url =
+                          'https://aisurvey.netlify.app/survey/edit/$responseId';
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Survey created successfully!'), backgroundColor: Colors.green,
+                      ));
+                      navigateToWebView(context, url);
+                     } catch (e) {
+                       print('Error: $e');
+                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                         content: Text('Error creating survey!'), backgroundColor: Colors.red,
+                       ));
+                     }
+                    },
+                    text: 'New Survey',
                   ),
-                  ElevatedButton(onPressed:() => {}, child: Text('Try Web App')),
+                  CustomButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          TextEditingController promptController =
+                              TextEditingController();
+                          return AlertDialog(
+                            title: Text('Prompt'),
+                            content: TextField(
+                              controller: promptController,
+                              decoration: InputDecoration(
+                                  hintText: 'Enter your prompt'),
+                            ),
+                            actions: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  String prompt = promptController.text;
+                                  print('Prompt: $prompt');
+                                  try{
+                                    String responseId =
+                                      await apiService.generateSurvey(prompt);
+                                  String url =
+                                      'https://aisurvey.netlify.app/survey/edit/$responseId';
+                                      
+                                  navigateToWebView(context, url);
+                                  } catch (e) {
+                                    print('Error: $e');
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text('Error generating survey!'), backgroundColor: Colors.red,
+                                    ));
+                                  }
+                                },
+                                child: Text('OK'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('Cancel'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    text: 'AI Generate',
+                  ),
+                  ElevatedButton(
+                      onPressed: () => {
+                        navigateToWebView(context, 'https://aisurvey.netlify.app')
+
+                      }, child: Text('Try Web App')),
                 ],
               ),
             );

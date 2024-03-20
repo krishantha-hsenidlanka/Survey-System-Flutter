@@ -9,7 +9,6 @@ class RegisterScreen extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // Form validation variables
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -28,7 +27,7 @@ class RegisterScreen extends StatelessWidget {
               colors: [
                 const Color.fromARGB(255, 22, 0, 143),
                 const Color.fromARGB(255, 21, 90, 237)
-              ], // Add your desired gradient colors
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -41,14 +40,14 @@ class RegisterScreen extends StatelessWidget {
           key: _formKey,
           child: Column(
             mainAxisAlignment:
-                MainAxisAlignment.center, // Align horizontally center
+                MainAxisAlignment.center,
             children: <Widget>[
               Text('Register',
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               SizedBox(height: 26),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Set horizontal padding
+                    horizontal: 16.0), 
                 child: TextFormField(
                   controller: _usernameController,
                   decoration: InputDecoration(
@@ -66,7 +65,7 @@ class RegisterScreen extends StatelessWidget {
               SizedBox(height: 8),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Set horizontal padding
+                    horizontal: 16.0), 
                 child: TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
@@ -84,7 +83,7 @@ class RegisterScreen extends StatelessWidget {
               SizedBox(height: 8),
               Padding(
                 padding: EdgeInsets.symmetric(
-                    horizontal: 16.0), // Set horizontal padding
+                    horizontal: 16.0), 
                 child: TextFormField(
                   controller: _passwordController,
                   decoration: InputDecoration(

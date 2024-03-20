@@ -47,7 +47,7 @@ class AuthenticationWrapper extends StatelessWidget {
       future: AuthService.isAuthenticated(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator(); // or loading screen
+          return CircularProgressIndicator(); 
         } else {
           if (snapshot.data == true) {
             return child;
