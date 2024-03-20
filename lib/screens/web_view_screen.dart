@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WebViewScreen extends StatefulWidget {
   final String url;
@@ -30,7 +31,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               colors: [
                 const Color.fromARGB(255, 22, 0, 143),
                 const Color.fromARGB(255, 21, 90, 237)
-              ], // Add your desired gradient colors
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -54,6 +55,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             },
             onWebViewCreated: (WebViewController controller) {
               _controller = controller;
+              setTokenInLocalStorage(); // Call setTokenInLocalStorage here
             },
           ),
           if (_isLoadingPage)
@@ -63,6 +65,14 @@ class _WebViewScreenState extends State<WebViewScreen> {
         ],
       ),
     );
+  }
+
+  void setTokenInLocalStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token != null) {
+      await _controller.evaluateJavascript('localStorage.setItem("token", "$token");');
+    }
   }
 }
 

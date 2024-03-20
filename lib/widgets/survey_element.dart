@@ -34,9 +34,12 @@ class SurveyElement extends StatelessWidget {
               Icon(icon,
                   size: 48, color: const Color.fromARGB(255, 86, 118, 153)),
               SizedBox(width: 16),
-              Text(
-                title,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),

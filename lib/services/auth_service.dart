@@ -9,7 +9,7 @@ class AuthService {
 
   static Future<bool> login(String username, String password) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/login'),
+      Uri.parse('$baseUrl/auth/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -28,7 +28,7 @@ class AuthService {
 
   static Future<bool> register(User user) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/signup'),
+      Uri.parse('$baseUrl/auth/signup'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -47,6 +47,38 @@ class AuthService {
     final token = prefs.getString('token');
     return token != null;
   }
+
+  static Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token');
+  }
+
+  static Future<bool> changePassword(String currentPassword, String newPassword) async {
+    final token = await getToken();
+    if (token == null) {
+      return false;
+    }
+
+    final response = await http.put(
+      Uri.parse('$baseUrl/auth/change-password'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        'currentPassword': currentPassword,
+        'newPassword': newPassword,
+      }),
+    );
+
+    print(response);
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
 
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();

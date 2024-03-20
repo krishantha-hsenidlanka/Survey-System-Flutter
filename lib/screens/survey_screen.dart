@@ -1,14 +1,83 @@
 import 'package:flutter/material.dart';
+import 'package:survey_system_mobile/screens/web_view_screen.dart';
 import 'package:survey_system_mobile/widgets/app_layout.dart';
 import 'package:survey_system_mobile/widgets/survey_element.dart';
+import 'package:survey_system_mobile/models/survey.dart';
+import 'package:survey_system_mobile/services/api_service.dart';
 
-class SurveySreen extends StatelessWidget {
+class SurveyScreen extends StatefulWidget {
+  @override
+  _SurveyScreenState createState() => _SurveyScreenState();
+}
+
+class _SurveyScreenState extends State<SurveyScreen> {
+  final ApiService _apiService = ApiService();
+  late Future<List<Survey>> _futureSurveys;
+  final ScrollController _scrollController = ScrollController();
+  List<Survey> _surveys = [];
+  int _currentPage = 0;
+  bool _isLoading = false;
+  bool _hasMoreSurveys = true; // Add this line
+
+  @override
+  void initState() {
+    super.initState();
+    _futureSurveys = _apiService.fetchSurveys(page: _currentPage, size: 5);
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _refreshSurveys() async {
+    setState(() {
+      _currentPage = 0;
+      _futureSurveys = _apiService.fetchSurveys(page: _currentPage, size: 5);
+    });
+  }
+
+  Future<void> _loadMoreSurveys() async {
+    // setState(() {
+    //   _isLoading = true;
+    // });
+
+    try {
+      final newSurveys =
+          await _apiService.fetchSurveys(page: _currentPage + 1, size: 5);
+      setState(() {
+        if (newSurveys.isEmpty) {
+          _hasMoreSurveys = false;
+        } else {
+          _surveys.addAll(newSurveys);
+          _currentPage++;
+          _isLoading = false;
+        }
+      });
+    } catch (e) {
+      _hasMoreSurveys = false;
+    }
+  }
+
+  void _scrollListener() {
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange) {
+      if (!_isLoading && _hasMoreSurveys) {
+        // Modify this line
+        _loadMoreSurveys();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppLayout(
       title: 'My Surveys',
       backButton: false,
-      currentIndex: 1, 
+      currentIndex: 1,
       onTap: (index) {
         switch (index) {
           case 0:
@@ -22,43 +91,122 @@ class SurveySreen extends StatelessWidget {
             break;
         }
       },
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SurveyElement(
-              icon: Icons.description,
-              title: 'Survey Title',
-              onViewPressed: () {
-                // Handle view button pressed
-              },
-              onEditPressed: () {
-                // Handle edit button pressed
-              },
-              onAnalyticsPressed: () {
-                // Handle analytics button pressed
-              },
-              onDeletePressed: () {
-                // Handle delete button pressed
-              },
-            ),
-            SurveyElement(
-              icon: Icons.description,
-              title: 'Survey Title',
-              onViewPressed: () {
-                // Handle view button pressed
-              },
-              onEditPressed: () {
-                // Handle edit button pressed
-              },
-              onAnalyticsPressed: () {
-                // Handle analytics button pressed
-              },
-              onDeletePressed: () {
-                // Handle delete button pressed
-              },
-            ),
-          ],
+      child: RefreshIndicator(
+        onRefresh: _refreshSurveys,
+        child: FutureBuilder<List<Survey>>(
+          future: _futureSurveys,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                  child:
+                      CircularProgressIndicator(
+                        color: Color.fromARGB(214, 33, 47, 243),
+                        
+                      )); // Add 'const' keyword
+            } else if (snapshot.hasError) {
+              return Center(
+                  child: Text('No surveys yet!',
+                      style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold)));
+            } else {
+              _surveys = snapshot.data!;
+              if (_surveys.isEmpty) {
+                return Center(
+                  child: Text('No surveys yet'),
+                );
+              } else {
+                return ListView.builder(
+                  controller: _scrollController,
+                  itemCount: _surveys.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index < _surveys.length) {
+                      final survey = _surveys[index];
+                      return SurveyElement(
+                        icon: Icons.description,
+                        title: survey.title,
+                        onViewPressed: () {
+                          navigateToWebView(context,
+                              'https://aisurvey.netlify.app/survey/${survey.id}');
+                        },
+                        onEditPressed: () {
+                          navigateToWebView(context,
+                              'https://aisurvey.netlify.app/survey/edit/${survey.id}');
+                        },
+                        onAnalyticsPressed: () {
+                          navigateToWebView(context,
+                              'https://aisurvey.netlify.app/responses/${survey.id}');
+                        },
+                        onDeletePressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text(
+                                    'Confirm Delete'), // Add 'const' keyword
+                                content: const Text(
+                                    'Are you sure you want to delete this survey?'), // Add 'const' keyword
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    child: const Text(
+                                        'Cancel'), // Add 'const' keyword
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      try {
+                                        await _apiService
+                                            .deleteSurvey(survey.id);
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                                'Survey deleted successfully.'), // Add 'const' keyword
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+                                        setState(() {
+                                          _surveys.removeAt(index);
+                                        });
+                                      } catch (e) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          SnackBar(
+                                            content: const Text(
+                                                'Failed to delete survey.'), // Add 'const' keyword
+                                            backgroundColor: Colors.red,
+                                          ),
+                                        );
+                                      }
+                                      Navigator.of(context)
+                                          .pop(); // Close the dialog
+                                    },
+                                    child: const Text(
+                                        'Delete'), // Add 'const' keyword
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      );
+                    } else if (_isLoading) {
+                      return const Center(
+                          child:
+                              CircularProgressIndicator()); // Add 'const' keyword
+                    } else {
+                      return SizedBox();
+                    }
+                  },
+                );
+              }
+            }
+          },
         ),
       ),
     );

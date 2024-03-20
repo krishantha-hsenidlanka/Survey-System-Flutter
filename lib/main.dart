@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => AuthenticationWrapper(child: HomeScreen()),
         '/register': (context) => RegisterScreen(),
         '/responses': (context) => AuthenticationWrapper(child: ResponseScreen()),
-        '/surveys': (context) => AuthenticationWrapper(child: SurveySreen()), 
+        '/surveys': (context) => AuthenticationWrapper(child: SurveyScreen()), 
         '/profile': (context) => AuthenticationWrapper(child: ProfileScreen()),
       },
     );
@@ -58,13 +58,4 @@ class AuthenticationWrapper extends StatelessWidget {
       },
     );
   }
-}
-
-void navigateToWebView(BuildContext context, String url) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => WebViewScreen(url: url),
-    ),
-  );
 }

@@ -18,12 +18,13 @@ class CustomButton extends StatelessWidget {
         height: 44.0,
         decoration: BoxDecoration(
           gradient: LinearGradient(colors: [Color.fromARGB(255, 101, 77, 230), Color.fromARGB(255, 39, 0, 255)]),
-          borderRadius: BorderRadius.circular(30), // Set border radius
+          borderRadius: BorderRadius.circular(30), 
         ),
         child: Material(
           color: Colors.transparent,
           child: InkWell(
             onTap: onPressed,
+            borderRadius: BorderRadius.circular(30), 
             child: Center(
               child: Text(
                 text,
