@@ -16,8 +16,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
   final ScrollController _scrollController = ScrollController();
   List<Survey> _surveys = [];
   int _currentPage = 0;
+  double _previousScrollOffset = 0.0;
   bool _isLoading = false;
-  bool _hasMoreSurveys = true; 
+  bool _hasMoreSurveys = true;
   @override
   void initState() {
     super.initState();
@@ -34,11 +35,14 @@ class _SurveyScreenState extends State<SurveyScreen> {
   Future<void> _refreshSurveys() async {
     setState(() {
       _currentPage = 0;
+      _hasMoreSurveys = true;
       _futureSurveys = _apiService.fetchSurveys(page: _currentPage, size: 5);
     });
   }
 
   Future<void> _loadMoreSurveys() async {
+    _previousScrollOffset = _scrollController.offset;
+
     // setState(() {
     //   _isLoading = true;
     // });
@@ -53,6 +57,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
           _surveys.addAll(newSurveys);
           _currentPage++;
           _isLoading = false;
+          _scrollController.jumpTo(_previousScrollOffset);
         }
       });
     } catch (e) {
@@ -65,7 +70,6 @@ class _SurveyScreenState extends State<SurveyScreen> {
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange) {
       if (!_isLoading && _hasMoreSurveys) {
-        // Modify this line
         _loadMoreSurveys();
       }
     }
@@ -96,12 +100,11 @@ class _SurveyScreenState extends State<SurveyScreen> {
           future: _futureSurveys,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
+              print('waiting and refreshing');
               return const Center(
-                  child:
-                      CircularProgressIndicator(
-                        color: Color.fromARGB(214, 33, 47, 243),
-                        
-                      )); 
+                  child: CircularProgressIndicator(
+                color: Color.fromARGB(214, 33, 47, 243),
+              ));
             } else if (snapshot.hasError) {
               return Center(
                   child: Text('No surveys yet!',
@@ -142,18 +145,15 @@ class _SurveyScreenState extends State<SurveyScreen> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: const Text(
-                                    'Confirm Delete'), 
+                                title: const Text('Confirm Delete'),
                                 content: const Text(
                                     'Are you sure you want to delete this survey?'), // Add 'const' keyword
                                 actions: [
                                   TextButton(
                                     onPressed: () {
-                                      Navigator.of(context)
-                                          .pop(); 
+                                      Navigator.of(context).pop();
                                     },
-                                    child: const Text(
-                                        'Cancel'), 
+                                    child: const Text('Cancel'),
                                   ),
                                   TextButton(
                                     onPressed: () async {
@@ -165,7 +165,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                             .showSnackBar(
                                           SnackBar(
                                             content: const Text(
-                                                'Survey deleted successfully.'), 
+                                                'Survey deleted successfully.'),
                                             backgroundColor: Colors.green,
                                           ),
                                         );
@@ -182,11 +182,9 @@ class _SurveyScreenState extends State<SurveyScreen> {
                                           ),
                                         );
                                       }
-                                      Navigator.of(context)
-                                          .pop();
+                                      Navigator.of(context).pop();
                                     },
-                                    child: const Text(
-                                        'Delete'), 
+                                    child: const Text('Delete'),
                                   ),
                                 ],
                               );
@@ -195,9 +193,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                         },
                       );
                     } else if (_isLoading) {
-                      return const Center(
-                          child:
-                              CircularProgressIndicator()); 
+                      return const Center(child: CircularProgressIndicator());
                     } else {
                       return SizedBox();
                     }

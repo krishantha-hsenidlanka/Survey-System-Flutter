@@ -49,8 +49,7 @@ class AppLayout extends StatelessWidget {
               color: Colors.white,
               onPressed: () {
                 AuthService.logout();
-                Navigator.of(context).pop();
-
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                 Navigator.pushReplacementNamed(context, '/login');
               },
             ),
@@ -69,7 +68,7 @@ class AppLayout extends StatelessWidget {
                 return child;
               } else {
                 WidgetsBinding.instance!.addPostFrameCallback((_) {
-                  Navigator.of(context).pop();
+                Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                   Navigator.pushReplacementNamed(context, '/login');
                 });
                 return Container();
